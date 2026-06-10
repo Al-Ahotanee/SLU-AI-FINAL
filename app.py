@@ -212,7 +212,7 @@ with app.app_context():
 
 # ── auth helpers ──────────────────────────────────────────────────────────────
 def make_token(uid, role):
-    t = jwt.encode({"sub":uid,"role":role,
+    t = jwt.encode({"sub": str(uid), "role": role,
                     "exp": _utcnow()+timedelta(days=JWT_DAYS),
                     "iat": _utcnow()}, SECRET, algorithm="HS256")
     return t if isinstance(t, str) else t.decode()
@@ -225,7 +225,7 @@ def require_auth(f):
             return jsonify({"error":"Missing token"}), 401
         try:
             d = jwt.decode(auth.split(" ",1)[1], SECRET, algorithms=["HS256"])
-            g.user_id = d["sub"]; g.user_role = d["role"]
+            g.user_id = int(d["sub"]); g.user_role = d["role"]
         except jwt.ExpiredSignatureError:
             return jsonify({"error":"Token expired"}), 401
         except Exception:
