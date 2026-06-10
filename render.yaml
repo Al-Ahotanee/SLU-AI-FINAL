@@ -8,9 +8,9 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: AI_ENGINE_URL
-        value: https://YOUR-HF-USERNAME-slu-ai-engine.hf.space   # <-- update this
+        value: value: https://sgwazeer-sluengine.hf.space   # <-- update this
       - key: AI_SECRET
-        value: slu-ai-bridge-secret-change-me                     # <-- use same value as HF Space secret
+        value: slu-ai-bridge-secret                    # <-- use same value as HF Space secret
       - key: AI_TIMEOUT
         value: "15"
       - key: MAX_MB
