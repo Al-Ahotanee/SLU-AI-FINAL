@@ -12,7 +12,7 @@
     theme: {
       extend: {
         colors: {
-          brand: { 50:'#fef2ee',100:'#fde0d4',200:'#fab99e',300:'#f78b68',400:'#f26040',500:'#c8421a',600:'#a83515',700:'#8b2a10',800:'#70220d',900:'#5c1d0b' },
+          brand: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#2563eb',600:'#1d4ed8',700:'#1e40af',800:'#1e3a8a',900:'#172554' },
           dark:  { 800:'#1a2332',900:'#0f1923',950:'#080f18' }
         },
         fontFamily: { sans:['Inter','system-ui','sans-serif'], mono:['JetBrains Mono','monospace'] }
@@ -1609,96 +1609,481 @@ function AdminActivity() {
    LANDING / MARKETING SECTION
 ═══════════════════════════════════════════════════════════════════════════ */
 function Landing({onSignIn}) {
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const stats = [
+    {val:"500+", label:"Academic Resources"},
+    {val:"120+", label:"Faculty Members"},
+    {val:"11",   label:"Course Codes Indexed"},
+    {val:"AI",   label:"Semantic Search Engine"},
+  ];
+  const features = [
+    {icon:"Brain",      color:"bg-blue-600",   title:"AI Semantic Search",        desc:"Go beyond keywords. Our sentence-transformer engine understands meaning — search 'regression analysis for business' and find relevant statistics notes even if they never use those exact words."},
+    {icon:"UploadCloud",color:"bg-indigo-600", title:"Smart Document Upload",     desc:"Upload PDF, Word, PowerPoint or text files up to 50 MB. The AI auto-classifies the course code, academic level and resource type, then extracts keyword tags instantly."},
+    {icon:"Layers",     color:"bg-sky-600",    title:"Auto-Classification",       desc:"Documents are automatically assigned to CSC, MAT, STA and other course codes. Level detection handles 100-level through postgraduate without manual input from the uploader."},
+    {icon:"Compass",    color:"bg-violet-600", title:"Intelligent Recommendations",desc:"Every document page surfaces a 'You may also like' panel driven by vector similarity — not just same-course matches, but semantically adjacent material across departments."},
+    {icon:"BookMarked", color:"bg-cyan-600",   title:"Personal Library",          desc:"Bookmark resources for later, organise your reading list and pick up exactly where you left off. Your bookmarks sync across devices the moment you log in."},
+    {icon:"MessageSquare",color:"bg-blue-500", title:"Peer Discussion",           desc:"Comment threads sit directly under each document. Ask the uploader a clarification question, share a correction, or flag a supplementary resource — all in context."},
+    {icon:"ShieldCheck",color:"bg-teal-600",   title:"Granular Access Control",   desc:"Each document can be public (visible to all faculty) or private (uploader only). Admins have a full control panel: activate/deactivate accounts, audit download logs, review activity."},
+    {icon:"BarChart2",  color:"bg-blue-700",   title:"Admin Analytics Dashboard", desc:"Live charts show uploads by course, downloads per document, daily search volume and top contributors — giving HODs a real-time picture of departmental research activity."},
+  ];
+  const howItWorks = [
+    {step:"01", title:"Create Your Account",    desc:"Register with your university email. Admins approve faculty roles within 24 hours. Students get instant read-only access."},
+    {step:"02", title:"Upload Your Materials",  desc:"Drag and drop any file. Fill in the title and optional description — the AI handles the rest: course code, level, type and tags are set automatically."},
+    {step:"03", title:"Search & Discover",      desc:"Type a natural-language query. Semantic search scores every document in the repository and returns the most relevant results at the top."},
+    {step:"04", title:"Collaborate & Grow",     desc:"Bookmark what you need, comment on documents, and watch AI recommendations grow sharper as more faculty contribute."},
+  ];
+  const resourceTypes = [
+    {icon:"FileText",label:"Lecture Notes"},
+    {icon:"BookOpen",label:"Textbooks"},
+    {icon:"ClipboardList",label:"Past Questions"},
+    {icon:"PenTool",label:"Assignments"},
+    {icon:"Presentation",label:"Presentations"},
+    {icon:"FlaskConical",label:"Research Papers"},
+    {icon:"GraduationCap",label:"Final Year Projects"},
+    {icon:"HelpCircle",label:"Tutorials & Guides"},
+  ];
+
   return (
-    <header className="bg-gradient-to-r from-brand-700 to-brand-500 text-white">
-      <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center"><Icon name="BookOpen" size={18} className="text-white"/></div>
-          <div className="font-semibold text-lg">SLU Repository</div>
-        </div>
-        <nav className="hidden md:flex gap-6 items-center text-sm">
-          <a href="#hero" className="hover:underline">Home</a>
-          <a href="#features" className="hover:underline">Features</a>
-          <a href="#about" className="hover:underline">About</a>
-          <button onClick={()=>onSignIn && onSignIn()}
-            className="ml-4 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg">Sign In</button>
-        </nav>
-      </div>
+    <div className="min-h-screen bg-white text-slate-800" style={{fontFamily:"'Inter',system-ui,sans-serif"}}>
 
-      <section id="hero" className="py-20">
-        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+      {/* ── GLOBAL STYLES injected once ── */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        .land-font { font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif; }
+        .hero-grad  { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #1d4ed8 100%); }
+        .accent-glow{ box-shadow: 0 0 40px rgba(37,99,235,0.35); }
+        .card-hover { transition: transform .22s ease, box-shadow .22s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(30,58,138,0.12); }
+        .step-line::after { content:''; position:absolute; top:50%; left:100%; width:100%; height:2px; background:linear-gradient(90deg,#bfdbfe,transparent); }
+        .dot-grid { background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px); background-size: 24px 24px; }
+        .shimmer-btn { background: linear-gradient(90deg,#2563eb,#1d4ed8,#1e40af); background-size:200% 100%; transition: background-position .4s ease; }
+        .shimmer-btn:hover { background-position: right center; }
+        @keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        .float-anim { animation: floatY 4s ease-in-out infinite; }
+        @keyframes fadeSlideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+        .fade-up { animation: fadeSlideUp .55s ease both; }
+        .fade-up-d1 { animation-delay: .1s; }
+        .fade-up-d2 { animation-delay: .22s; }
+        .fade-up-d3 { animation-delay: .34s; }
+        .tag-pill { display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:500;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe; }
+      `}</style>
+
+      {/* ══════════════ NAVBAR ══════════════ */}
+      <nav className="land-font sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center accent-glow">
+              <Icon name="BookOpen" size={16} className="text-white"/>
+            </div>
+            <div>
+              <div className="font-bold text-slate-900 text-sm leading-none">SLU Repository</div>
+              <div className="text-xs text-slate-400 leading-tight">Kafin Hausa State University</div>
+            </div>
+          </div>
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+            <a href="#features" className="hover:text-blue-600 transition-colors">Features</a>
+            <a href="#how" className="hover:text-blue-600 transition-colors">How it Works</a>
+            <a href="#resources" className="hover:text-blue-600 transition-colors">Resources</a>
+            <a href="#about" className="hover:text-blue-600 transition-colors">About</a>
+          </div>
+          {/* CTA */}
+          <div className="hidden md:flex items-center gap-3">
+            <button onClick={onSignIn}
+              className="text-sm font-semibold text-blue-600 hover:text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
+              Sign In
+            </button>
+            <button onClick={onSignIn}
+              className="shimmer-btn text-sm font-semibold text-white px-5 py-2 rounded-xl">
+              Get Started →
+            </button>
+          </div>
+          {/* Mobile menu toggle */}
+          <button className="md:hidden p-2 rounded-lg hover:bg-slate-100" onClick={()=>setMobileOpen(o=>!o)}>
+            <Icon name={mobileOpen?"X":"Menu"} size={20} className="text-slate-700"/>
+          </button>
+        </div>
+        {/* Mobile menu */}
+        {mobileOpen && (
+          <div className="md:hidden border-t border-slate-100 bg-white px-6 py-4 flex flex-col gap-4 text-sm font-medium">
+            <a href="#features" onClick={()=>setMobileOpen(false)} className="text-slate-700">Features</a>
+            <a href="#how"      onClick={()=>setMobileOpen(false)} className="text-slate-700">How it Works</a>
+            <a href="#resources"onClick={()=>setMobileOpen(false)} className="text-slate-700">Resources</a>
+            <a href="#about"    onClick={()=>setMobileOpen(false)} className="text-slate-700">About</a>
+            <button onClick={onSignIn}
+              className="shimmer-btn text-white font-semibold py-2.5 rounded-xl text-center">
+              Get Started →
+            </button>
+          </div>
+        )}
+      </nav>
+
+      {/* ══════════════ HERO ══════════════ */}
+      <section className="land-font hero-grad text-white relative overflow-hidden">
+        {/* Dot-grid overlay */}
+        <div className="absolute inset-0 dot-grid opacity-10 pointer-events-none"/>
+        {/* Blurred orbs */}
+        <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-blue-400/20 blur-3xl pointer-events-none"/>
+        <div className="absolute bottom-0 left-1/3 w-64 h-64 rounded-full bg-indigo-400/20 blur-3xl pointer-events-none"/>
+
+        <div className="relative max-w-7xl mx-auto px-6 py-24 md:py-32 grid md:grid-cols-2 gap-16 items-center">
+          {/* Left copy */}
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold text-slate-900">A modern knowledge hub for faculty</h1>
-            <p className="mt-4 text-slate-600 max-w-xl">Secure, AI-powered repository designed for research and teaching — fast uploads, semantic search, smart recommendations, and team collaboration.</p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <button onClick={()=>onSignIn && onSignIn()}
-                className="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-semibold px-6 py-3 rounded-lg">Get Started</button>
-              <a href="#features" className="inline-flex items-center gap-2 text-slate-700 px-5 py-3 rounded-lg border border-slate-200">Learn More</a>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-semibold text-blue-200 mb-6 fade-up">
+              <Icon name="Sparkles" size={12} className="text-blue-300"/> AI-Powered Academic Repository
             </div>
-            <div className="mt-6 flex flex-wrap gap-4 text-sm text-slate-500">
-              <div className="flex items-center gap-2"><Icon name="Shield" size={14} className="text-brand-500"/> Enterprise-grade security</div>
-              <div className="flex items-center gap-2"><Icon name="Sparkles" size={14} className="text-brand-500"/> AI semantic search</div>
-              <div className="flex items-center gap-2"><Icon name="UploadCloud" size={14} className="text-brand-500"/> Bulk uploads & indexing</div>
+            <h1 className="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight fade-up fade-up-d1">
+              The Knowledge Hub<br/>
+              <span className="text-blue-300">Built for Academia</span>
+            </h1>
+            <p className="mt-5 text-blue-100/80 text-lg leading-relaxed max-w-lg fade-up fade-up-d2">
+              A secure, AI-powered repository where faculty upload, discover and collaborate on
+              lecture notes, research papers, past questions and projects — all indexed by an intelligent
+              semantic search engine.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-4 fade-up fade-up-d3">
+              <button onClick={onSignIn}
+                className="shimmer-btn font-bold text-white px-8 py-3.5 rounded-xl text-base shadow-lg shadow-blue-900/40 hover:scale-105 transition-transform">
+                Access Repository →
+              </button>
+              <a href="#features"
+                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 font-semibold px-6 py-3.5 rounded-xl text-sm transition-colors">
+                <Icon name="PlayCircle" size={16}/> See Features
+              </a>
+            </div>
+            {/* Trust badges */}
+            <div className="mt-10 flex flex-wrap gap-5 text-sm text-blue-200/70 fade-up">
+              {[
+                {icon:"ShieldCheck", label:"Secure & Private"},
+                {icon:"Zap",         label:"Instant AI Indexing"},
+                {icon:"Globe",       label:"Accessible Anywhere"},
+                {icon:"Users",       label:"Multi-Role Access"},
+              ].map((b,i)=>(
+                <div key={i} className="flex items-center gap-1.5">
+                  <Icon name={b.icon} size={13} className="text-blue-300"/>
+                  <span>{b.label}</span>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-xl p-6">
-            <div className="grid grid-cols-1 gap-4">
-              <div className="flex items-start gap-3">
-                <div className="w-11 h-11 rounded-lg bg-brand-50 flex items-center justify-center text-brand-600"><Icon name="Search" size={18} className="text-brand-600"/></div>
-                <div>
-                  <div className="font-semibold text-slate-800">Semantic Search</div>
-                  <div className="text-sm text-slate-500">Find relevant content using AI-powered embeddings.</div>
-                </div>
+          {/* Right — floating UI mockup card */}
+          <div className="hidden md:block float-anim">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 shadow-2xl">
+              {/* Fake search bar */}
+              <div className="flex items-center gap-3 bg-white/15 rounded-xl px-4 py-3 mb-5 border border-white/20">
+                <Icon name="Search" size={16} className="text-blue-300"/>
+                <span className="text-blue-100/70 text-sm">Search "data structures lecture notes"…</span>
               </div>
-              <div className="flex items-start gap-3">
-                <div className="w-11 h-11 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600"><Icon name="Upload" size={18} className="text-emerald-600"/></div>
-                <div>
-                  <div className="font-semibold text-slate-800">Smart Uploads</div>
-                  <div className="text-sm text-slate-500">Auto-classify, tag and index documents instantly.</div>
+              {/* Fake result cards */}
+              {[
+                {icon:"FileText",  title:"CSC201 — Data Structures & Algorithms", sub:"Lecture Note · 200 Level · Dr. Sani Musa", dl:"247 downloads"},
+                {icon:"BookOpen",  title:"Introduction to Linked Lists & Trees",  sub:"Textbook Chapter · CSC201 · 2023/2024",    dl:"183 downloads"},
+                {icon:"FlaskConical",title:"Binary Search Tree Implementation",   sub:"Tutorial · 200 Level · 3 comments",        dl:"96 downloads"},
+              ].map((r,i)=>(
+                <div key={i} className="flex items-start gap-3 bg-white/10 rounded-xl p-3 mb-2.5 border border-white/10">
+                  <div className="w-9 h-9 rounded-lg bg-blue-500/30 flex items-center justify-center flex-shrink-0">
+                    <Icon name={r.icon} size={14} className="text-blue-200"/>
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-white text-xs font-semibold truncate">{r.title}</div>
+                    <div className="text-blue-200/60 text-xs mt-0.5">{r.sub}</div>
+                    <div className="text-blue-300/80 text-xs mt-1 flex items-center gap-1">
+                      <Icon name="Download" size={10}/>{r.dl}
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-11 h-11 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600"><Icon name="Users" size={18} className="text-blue-600"/></div>
-                <div>
-                  <div className="font-semibold text-slate-800">Team Collaboration</div>
-                  <div className="text-sm text-slate-500">Share collections, bookmark and discuss resources.</div>
-                </div>
+              ))}
+              {/* AI badge */}
+              <div className="mt-3 flex items-center gap-2 text-xs text-blue-200/70">
+                <Icon name="Brain" size={12} className="text-blue-300"/>
+                Ranked by AI semantic relevance
               </div>
             </div>
           </div>
         </div>
-      </section>
 
-      <section id="features" className="bg-slate-50 py-12">
-        <div className="max-w-6xl mx-auto px-6">
-          <h3 className="text-lg font-semibold text-slate-800">Why SLU Repository</h3>
-          <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {icon:'FileText',t:'Centralized Library',d:'All faculty materials in a secure, searchable store.'},
-              {icon:'Cpu',t:'AI Assist',d:'Semantic search and recommendations to surface relevant work.'},
-              {icon:'Lock',t:'Access Control',d:'Private/public documents and admin controls.'},
-              {icon:'Repeat',t:'Versioning Ready',d:'Safe uploads and audit logs for governance.'},
-            ].map((f,i)=>(
-              <div key={i} className="bg-white p-5 rounded-xl border border-slate-100">
-                <div className="flex items-center gap-3 mb-3"><Icon name={f.icon} size={18} className="text-brand-500"/><div className="font-semibold text-slate-800">{f.t}</div></div>
-                <div className="text-sm text-slate-500">{f.d}</div>
+        {/* Stats bar */}
+        <div className="relative border-t border-white/10">
+          <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((s,i)=>(
+              <div key={i} className="text-center">
+                <div className="text-3xl font-extrabold text-white">{s.val}</div>
+                <div className="text-blue-200/70 text-sm mt-1">{s.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <footer className="bg-slate-900 text-slate-300 py-8">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between gap-6">
-          <div>
-            <div className="text-white font-semibold">SLU Repository</div>
-            <div className="text-sm mt-2 text-slate-400">Department of Computer Science · Kafin Hausa State University</div>
+      {/* ══════════════ FEATURES ══════════════ */}
+      <section id="features" className="land-font py-24 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-14">
+            <div className="tag-pill mx-auto mb-4"><Icon name="Cpu" size={12}/>Platform Features</div>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900">Everything your department needs</h2>
+            <p className="mt-3 text-slate-500 max-w-xl mx-auto">
+              From AI-powered discovery to peer discussion threads — every feature was designed
+              around how Nigerian university faculty actually work.
+            </p>
           </div>
-          <div className="text-sm text-slate-400">© {new Date().getFullYear()} SLU Faculty Repository — Built for research and teaching.</div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {features.map((f,i)=>(
+              <div key={i} className="card-hover bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                <div className={`w-11 h-11 rounded-xl ${f.color} flex items-center justify-center mb-4`}>
+                  <Icon name={f.icon} size={18} className="text-white"/>
+                </div>
+                <h3 className="font-bold text-slate-900 text-sm mb-2">{f.title}</h3>
+                <p className="text-slate-500 text-xs leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════ HOW IT WORKS ══════════════ */}
+      <section id="how" className="land-font py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-14">
+            <div className="tag-pill mx-auto mb-4"><Icon name="Workflow" size={12}/>Simple Workflow</div>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900">Up and running in minutes</h2>
+            <p className="mt-3 text-slate-500 max-w-md mx-auto">
+              No training sessions, no steep learning curve. Four steps from registration to discovery.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-4 gap-8">
+            {howItWorks.map((s,i)=>(
+              <div key={i} className="relative text-center">
+                {/* connector line for non-last items */}
+                {i < howItWorks.length-1 && (
+                  <div className="hidden md:block absolute top-8 left-[calc(50%+32px)] right-[-calc(50%-32px)] h-0.5 bg-gradient-to-r from-blue-200 to-transparent"/>
+                )}
+                <div className="w-16 h-16 rounded-2xl bg-blue-600 text-white font-extrabold text-lg flex items-center justify-center mx-auto mb-5 shadow-lg shadow-blue-200">
+                  {s.step}
+                </div>
+                <h3 className="font-bold text-slate-900 mb-2">{s.title}</h3>
+                <p className="text-slate-500 text-sm leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════ RESOURCE TYPES ══════════════ */}
+      <section id="resources" className="land-font py-24 bg-blue-600">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 border border-white/25 text-xs font-semibold text-blue-100 mb-4">
+              <Icon name="FolderOpen" size={12}/>Supported Resource Types
+            </div>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white">Every type of academic material</h2>
+            <p className="mt-3 text-blue-100/80 max-w-lg mx-auto">
+              The repository recognises and categorises eight resource types, enabling precise
+              filtering by students and faculty alike.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {resourceTypes.map((r,i)=>(
+              <div key={i} className="card-hover bg-white/10 border border-white/20 rounded-2xl p-5 text-center">
+                <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-3">
+                  <Icon name={r.icon} size={20} className="text-white"/>
+                </div>
+                <div className="text-white font-semibold text-sm">{r.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════ AI EXPLAINER ══════════════ */}
+      <section className="land-font py-24 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+          {/* Left — visual */}
+          <div className="relative">
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-xl p-7">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center">
+                  <Icon name="Brain" size={18} className="text-white"/>
+                </div>
+                <div>
+                  <div className="font-bold text-slate-900 text-sm">AI Engine</div>
+                  <div className="text-xs text-slate-400">Powered by sentence-transformers</div>
+                </div>
+                <div className="ml-auto flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"/>Online
+                </div>
+              </div>
+              {[
+                {label:"Semantic Search",     pct:95, color:"bg-blue-500"},
+                {label:"Auto-Classification", pct:88, color:"bg-indigo-500"},
+                {label:"Tag Extraction",      pct:92, color:"bg-sky-500"},
+                {label:"Recommendations",     pct:84, color:"bg-violet-500"},
+              ].map((m,i)=>(
+                <div key={i} className="mb-4">
+                  <div className="flex justify-between text-xs font-medium text-slate-700 mb-1.5">
+                    <span>{m.label}</span><span>{m.pct}%</span>
+                  </div>
+                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full ${m.color}`} style={{width:`${m.pct}%`}}/>
+                  </div>
+                </div>
+              ))}
+              <div className="mt-5 flex items-center gap-2 text-xs text-slate-400 bg-slate-50 rounded-xl p-3">
+                <Icon name="Info" size={12} className="text-blue-400"/>
+                Heavy ML inference runs on HuggingFace — Render stays lean and fast.
+              </div>
+            </div>
+          </div>
+
+          {/* Right — copy */}
+          <div>
+            <div className="tag-pill mb-5"><Icon name="Sparkles" size={12}/>How the AI Works</div>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-5">
+              Smarter search than<br/> a basic keyword filter
+            </h2>
+            <div className="space-y-5">
+              {[
+                {icon:"Search",    title:"Semantic Understanding",  desc:"Documents are converted into high-dimensional vectors capturing meaning. A query for 'linear models in statistics' surfaces STA101 regression notes even without the exact phrase."},
+                {icon:"Cpu",       title:"Zero-Config Classification",desc:"Upload a file and walk away. The AI reads the text, detects the course code, academic level and resource type, and sets all metadata fields automatically."},
+                {icon:"GitMerge",  title:"Graceful Degradation",    desc:"If the AI engine is sleeping (cold start), the system falls back to local TF-IDF scoring so search never completely fails — accuracy reduces, availability never does."},
+              ].map((p,i)=>(
+                <div key={i} className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                    <Icon name={p.icon} size={16} className="text-blue-600"/>
+                  </div>
+                  <div>
+                    <div className="font-bold text-slate-900 text-sm mb-1">{p.title}</div>
+                    <div className="text-slate-500 text-sm leading-relaxed">{p.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════ ABOUT / INSTITUTION ══════════════ */}
+      <section id="about" className="land-font py-24 bg-white border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+          <div>
+            <div className="tag-pill mb-5"><Icon name="GraduationCap" size={12}/>About the Platform</div>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-5">
+              Built for Sule Lamido<br/>University
+            </h2>
+            <p className="text-slate-500 leading-relaxed mb-5">
+              The SLU Faculty Repository was developed by the Department of Computer Science as a
+              full-stack capstone project — addressing the real need for a centralised, intelligent
+              academic resource platform across Nigerian universities.
+            </p>
+            <p className="text-slate-500 leading-relaxed mb-8">
+              The system supports all academic levels from 100 Level through postgraduate programmes,
+              eleven course codes, and eight resource types — with role-based access for faculty,
+              students and administrators.
+            </p>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                {icon:"University",  label:"Kafin Hausa State University"},
+                {icon:"Code2",       label:"Dept. of Computer Science"},
+                {icon:"Calendar",    label:"Academic Year 2024/2025"},
+                {icon:"Globe",       label:"Deployed on Render + HuggingFace"},
+              ].map((b,i)=>(
+                <div key={i} className="flex items-center gap-3 text-sm text-slate-600">
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                    <Icon name={b.icon} size={14} className="text-blue-600"/>
+                  </div>
+                  {b.label}
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Role cards */}
+          <div className="grid grid-cols-1 gap-4">
+            {[
+              {role:"Faculty",    icon:"User",          color:"bg-blue-600",   desc:"Upload and manage your course materials. Track downloads and comments. Build your academic portfolio."},
+              {role:"Students",   icon:"GraduationCap", color:"bg-indigo-600", desc:"Search and download lecture notes, past questions and project guides. Bookmark resources for revision."},
+              {role:"Admin",      icon:"ShieldCheck",   color:"bg-slate-800",  desc:"Full control panel: manage users, view analytics, moderate content, and generate usage reports."},
+            ].map((r,i)=>(
+              <div key={i} className="card-hover flex items-start gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                <div className={`w-10 h-10 rounded-xl ${r.color} flex items-center justify-center flex-shrink-0`}>
+                  <Icon name={r.icon} size={16} className="text-white"/>
+                </div>
+                <div>
+                  <div className="font-bold text-slate-900 text-sm mb-1">{r.role}</div>
+                  <div className="text-slate-500 text-xs leading-relaxed">{r.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════ CTA BANNER ══════════════ */}
+      <section className="land-font hero-grad py-20 text-center relative overflow-hidden">
+        <div className="absolute inset-0 dot-grid opacity-10 pointer-events-none"/>
+        <div className="relative max-w-2xl mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
+            Ready to centralise your department's knowledge?
+          </h2>
+          <p className="text-blue-100/80 mb-8">
+            Join faculty already using the SLU Repository. Get semantic search, AI auto-tagging
+            and cross-department discovery — all in one platform.
+          </p>
+          <button onClick={onSignIn}
+            className="shimmer-btn font-bold text-white px-10 py-4 rounded-2xl text-base shadow-xl shadow-blue-900/40 hover:scale-105 transition-transform">
+            Get Access Now →
+          </button>
+          <div className="mt-5 text-blue-200/60 text-sm">Free for all SLU faculty and students</div>
+        </div>
+      </section>
+
+      {/* ══════════════ FOOTER ══════════════ */}
+      <footer className="land-font bg-slate-900 text-slate-400 py-12">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-4 gap-10 mb-10">
+            {/* Brand */}
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+                  <Icon name="BookOpen" size={14} className="text-white"/>
+                </div>
+                <div className="font-bold text-white">SLU Repository</div>
+              </div>
+              <p className="text-sm leading-relaxed max-w-xs">
+                AI-powered academic resource platform for Kafin Hausa State University —
+                making knowledge accessible, searchable and collaborative.
+              </p>
+            </div>
+            {/* Links */}
+            <div>
+              <div className="text-white font-semibold text-sm mb-4">Platform</div>
+              <div className="flex flex-col gap-2 text-sm">
+                <a href="#features" className="hover:text-white transition-colors">Features</a>
+                <a href="#how"      className="hover:text-white transition-colors">How it Works</a>
+                <a href="#resources"className="hover:text-white transition-colors">Resource Types</a>
+                <a href="#about"    className="hover:text-white transition-colors">About</a>
+              </div>
+            </div>
+            <div>
+              <div className="text-white font-semibold text-sm mb-4">Institution</div>
+              <div className="flex flex-col gap-2 text-sm">
+                <span>Dept. of Computer Science</span>
+                <span>Kafin Hausa, Jigawa State</span>
+                <span>Nigeria</span>
+                <span className="text-blue-400">Academic Year 2024/2025</span>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-slate-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs">
+            <span>© {new Date().getFullYear()} SLU Faculty Repository · Dept. of Computer Science · Kafin Hausa State University</span>
+            <div className="flex items-center gap-1.5 text-slate-500">
+              <Icon name="Zap" size={11} className="text-blue-500"/>
+              Powered by sentence-transformers · Render · HuggingFace Spaces
+            </div>
+          </div>
         </div>
       </footer>
-    </header>
+    </div>
   );
 }
 
